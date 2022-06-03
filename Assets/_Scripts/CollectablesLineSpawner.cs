@@ -19,7 +19,7 @@ public class CollectablesLineSpawner : MonoBehaviour, ICollectablesSpawner
     protected Transform _collectablesParent;
 
 
-    private void Start()
+    private void Awake() 
     {
         _collectablesRow = new int[_countInRow];
     }
