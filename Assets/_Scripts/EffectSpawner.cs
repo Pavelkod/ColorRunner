@@ -2,18 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IEffect
-{
-    void Perform(Vector3 point);
-}
-
-public class EffectSpawner : MonoBehaviour, IEffect
+public class EffectSpawner : MonoBehaviour
 {
     [SerializeField] Transform _pfEffect;
     [SerializeField] float _timeOut = 5;
-    public void Perform(Vector3 point)
+    [SerializeField] Vector3 _spawnPostion;
+    public void Perform()
     {
-        var obj = Instantiate(_pfEffect, point, Quaternion.identity);
+        var obj = Instantiate(_pfEffect, _spawnPostion + transform.position, Quaternion.identity);
         Destroy(obj.gameObject, _timeOut);
     }
 }

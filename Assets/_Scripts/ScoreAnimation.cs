@@ -13,6 +13,7 @@ public class ScoreAnimation : MonoBehaviour
     private float _targetPoints = 0;
     private void OnEnable()
     {
+        Debug.Log("scoresOnEnable");
         _targetPoints = _soScoreContainer.Score;
         StartCoroutine(AnimateText());
     }
@@ -24,6 +25,8 @@ public class ScoreAnimation : MonoBehaviour
 
         do
         {
+        Debug.Log("Scores animations loop");
+
             current = Mathf.MoveTowards(current, target, Time.deltaTime * _animationSpeed);
             currentPoints = Mathf.Lerp(currentPoints, _targetPoints, _curve.Evaluate(current));
             _scoreText.SetText(currentPoints.ToString("F0"));

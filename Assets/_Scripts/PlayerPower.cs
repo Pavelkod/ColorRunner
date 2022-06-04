@@ -10,6 +10,9 @@ public class PlayerPower : MonoBehaviour, IHavePower, IColorTaker
     [SerializeField] float _powerScaleStep = .07f;
     [SerializeField] float _growSpeed = 1;
     [SerializeField] ScoresContainer _soScoresContainer;
+    [SerializeField, Header("Game Events")] GameEvent _powerUpEvent;
+    [SerializeField] GameEvent _powerDownEvent;
+    [SerializeField] GameEvent _changeColorEvent;
 
     private bool _isActive = false;
 
@@ -18,7 +21,6 @@ public class PlayerPower : MonoBehaviour, IHavePower, IColorTaker
     SkinnedMeshRenderer _renderer;
     private int _currentColorIndex = 0;
     private int _currentPower;
-    private IEffect _colorChangeEffect;
 
     Vector3 _targetScale = Vector3.one;
 
@@ -26,19 +28,20 @@ public class PlayerPower : MonoBehaviour, IHavePower, IColorTaker
     {
         _renderer = GetComponentInChildren<SkinnedMeshRenderer>();
         _renderer.sharedMaterial.color = _gameColors.Colors[_currentColorIndex];
-        _colorChangeEffect = GetComponent<IEffect>();
     }
 
     private void OnEnable()
     {
-        GameManager.Instance.OnAfterStateChange += OnGameStateChange;
+        GameManager.Instance.OnBeforeStateChange += OnGameStateChange;
     }
 
     private void OnGameStateChange(States state)
     {
         _isActive = States.Game == state;
         _soScoresContainer.Score = _currentPower;
+
         if (state != States.Game) return;
+
         ResetPower();
     }
 
@@ -56,10 +59,12 @@ public class PlayerPower : MonoBehaviour, IHavePower, IColorTaker
         if (colorIndex == _currentColorIndex)
         {
             _currentPower += amount;
+            _powerUpEvent.FireEvent();
         }
         else
         {
             _currentPower -= amount;
+            _powerDownEvent.FireEvent();
             if (_currentPower < 0) GameManager.Instance.SetState(States.Lose);
         }
 
@@ -76,7 +81,7 @@ public class PlayerPower : MonoBehaviour, IHavePower, IColorTaker
     void IColorTaker.TakeColor(int colorIndex)
     {
         SetColor(colorIndex);
-        _colorChangeEffect?.Perform(transform.position + Vector3.up);
+        _changeColorEvent.FireEvent();
     }
 
     private void SetColor(int colorIndex)

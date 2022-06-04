@@ -61,9 +61,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnChangeDirection(float input)
     {
-        Debug.Log(input);
         _targetRotation = Quaternion.Euler(0, _maxAngle * input, 0);
-
     }
 
     private void OnDisable()

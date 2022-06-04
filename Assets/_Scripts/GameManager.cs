@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(-1)]
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -11,7 +12,7 @@ public class GameManager : MonoBehaviour
     public event Action<States> OnBeforeStateChange;
     public event Action<States> OnAfterStateChange;
 
-    private States _currentState;
+    private States _currentState = (States)(-1);
 
     private void Awake()
     {
@@ -22,6 +23,13 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
+    }
+    private void Start()
+    {
+        Init();
+    }
+    void Init()
+    {
         SetState(States.Menu);
     }
 
